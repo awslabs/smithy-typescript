@@ -24,7 +24,7 @@ public class IndexGeneratorTest {
 
         IndexGenerator.writeIndex(settings, model, symbolProvider, manifest);
 
-        String contents = manifest.getFileString("index.ts").get();
+        String contents = manifest.getFileString("src/index.ts").get();
         assertThat(contents, containsString("export * from \"./Example\";"));
         assertThat(contents, containsString("export * from \"./ExampleClient\";"));
         assertThat(contents, containsString("export * from \"./commands/GetFooCommand\";"));

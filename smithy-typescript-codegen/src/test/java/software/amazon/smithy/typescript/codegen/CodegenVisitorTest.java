@@ -37,9 +37,9 @@ public class CodegenVisitorTest {
         // Did we generate the runtime config files?
         // note that asserting the contents of runtime config files is handled in its own unit tests.
         Assertions.assertTrue(manifest.hasFile("package.json"));
-        Assertions.assertTrue(manifest.hasFile("runtimeConfig.browser.ts"));
-        Assertions.assertTrue(manifest.hasFile("runtimeConfig.ts"));
-        Assertions.assertTrue(manifest.hasFile("index.ts"));
+        Assertions.assertTrue(manifest.hasFile("src/runtimeConfig.browser.ts"));
+        Assertions.assertTrue(manifest.hasFile("src/runtimeConfig.ts"));
+        Assertions.assertTrue(manifest.hasFile("src/index.ts"));
 
         // Does the package.json file point to the runtime config?
         String packageJsonContents = manifest.getFileString("package.json").get();
@@ -91,12 +91,12 @@ public class CodegenVisitorTest {
                 .build();
         new TypeScriptCodegenPlugin().execute(context);
 
-        Assertions.assertTrue(manifest.hasFile("Example.ts"));
-        assertThat(manifest.getFileString("Example.ts").get(),
+        Assertions.assertTrue(manifest.hasFile("src/Example.ts"));
+        assertThat(manifest.getFileString("src/Example.ts").get(),
                    containsString("export class Example extends ExampleClient"));
 
-        Assertions.assertTrue(manifest.hasFile("ExampleClient.ts"));
-        assertThat(manifest.getFileString("ExampleClient.ts").get(), containsString("export class ExampleClient"));
+        Assertions.assertTrue(manifest.hasFile("src/ExampleClient.ts"));
+        assertThat(manifest.getFileString("src/ExampleClient.ts").get(), containsString("export class ExampleClient"));
     }
 
     @Test void throwsOnShapesThatCannotBeCondensed() {
@@ -140,11 +140,11 @@ public class CodegenVisitorTest {
 
         new TypeScriptCodegenPlugin().execute(context);
 
-        Assertions.assertTrue(manifest.hasFile("models/index.ts"));
-        Assertions.assertTrue(manifest.hasFile("models/models_0.ts"));
-        assertThat(manifest.getFileString("models/index.ts").get(),
+        Assertions.assertTrue(manifest.hasFile("src/models/index.ts"));
+        Assertions.assertTrue(manifest.hasFile("src/models/models_0.ts"));
+        assertThat(manifest.getFileString("src/models/index.ts").get(),
                 containsString("export * from \"./models_0\";"));
-        assertThat(manifest.getFileString("models/models_0.ts").get(),
+        assertThat(manifest.getFileString("src/models/models_0.ts").get(),
                 containsString("export interface Bar {\n" +
                         "  baz: string | undefined;\n" +
                         "}"));

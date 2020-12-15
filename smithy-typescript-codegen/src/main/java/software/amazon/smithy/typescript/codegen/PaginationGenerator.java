@@ -95,7 +95,7 @@ final class PaginationGenerator implements Runnable {
 
         // Import Pagination types
         writer.addImport("Paginator", "Paginator", "@aws-sdk/types");
-        writer.addImport(paginationType, paginationType, "./" + PAGINATION_INTERFACE_FILE.replace(".ts", ""));
+        writer.addImport(paginationType, paginationType, "./src/" + PAGINATION_INTERFACE_FILE.replace(".ts", ""));
 
         writeCommandRequest();
         writeMethodRequest();

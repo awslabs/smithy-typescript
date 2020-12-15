@@ -1,3 +1,6 @@
+// Cannot use `import` as it's not under TS rootDir.
+const { name, version } = require('../package.json');
+
 import { ClientDefaults } from "${clientModuleName}";
 import { ClientDefaultValues as BrowserDefaults } from "./runtimeConfig.browser";
 

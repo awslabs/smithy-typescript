@@ -14,6 +14,7 @@
       "es2015.iterable",
       "es2015.symbol.wellknown"
     ],
-    "outDir": "dist/es"
+    "rootDir": "src",
+    "outDir": "dist-es"
   }
 }

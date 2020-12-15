@@ -99,8 +99,9 @@ final class RuntimeConfigGenerator {
                 writer.addDependency(TypeScriptDependency.AWS_SDK_UTIL_USER_AGENT_NODE);
                 writer.addImport("defaultUserAgent", "defaultUserAgent",
                         TypeScriptDependency.AWS_SDK_UTIL_USER_AGENT_NODE.packageName);
-                writer.addDefaultImport("packageInfo", "./package.json");
-                writer.write("defaultUserAgent: defaultUserAgent(packageInfo.name, packageInfo.version),");
+                // Cannot use import for package.json as it's not under TS rootDir.
+                // require('../package.json') is added in template instead.
+                writer.write("defaultUserAgent: defaultUserAgent(name, version),");
             }
     );
     private final Map<String, Consumer<TypeScriptWriter>> browserRuntimeConfigDefaults = MapUtils.of(
@@ -162,8 +163,9 @@ final class RuntimeConfigGenerator {
                 writer.addDependency(TypeScriptDependency.AWS_SDK_UTIL_USER_AGENT_BROWSER);
                 writer.addImport("defaultUserAgent", "defaultUserAgent",
                         TypeScriptDependency.AWS_SDK_UTIL_USER_AGENT_BROWSER.packageName);
-                writer.addDefaultImport("packageInfo", "./package.json");
-                writer.write("defaultUserAgent: defaultUserAgent(packageInfo.name, packageInfo.version),");
+                // Cannot use import for package.json as it's not under TS rootDir.
+                // require('../package.json') is added in template instead.
+                writer.write("defaultUserAgent: defaultUserAgent(name, version),");
             }
     );
     private final Map<String, Consumer<TypeScriptWriter>> reactNativeRuntimeConfigDefaults = MapUtils.of(
@@ -180,9 +182,10 @@ final class RuntimeConfigGenerator {
                 writer.write("urlParser: parseUrl,");
             },
             "defaultUserAgent", writer -> {
-                writer.addDefaultImport("packageInfo", "./package.json");
+                // Cannot use import for package.json as it's not under TS rootDir.
+                // require('../package.json') is added in template instead.
                 writer.write("defaultUserAgent: "
-                    + "`aws-sdk-js-v3-react-native-$${packageInfo.name}/$${packageInfo.version}`,");
+                    + "`aws-sdk-js-v3-react-native-$${name}/$${version}`,");
             }
     );
     private final Map<String, Consumer<TypeScriptWriter>> sharedRuntimeConfigDefaults = MapUtils.of(
@@ -209,7 +212,7 @@ final class RuntimeConfigGenerator {
     void generate(LanguageTarget target) {
         String template = TypeScriptUtils.loadResourceAsString(target.getTemplateFileName());
         String contents = template
-                .replace("${clientModuleName}", symbolProvider.toSymbol(service).getNamespace())
+                .replace("${clientModuleName}", symbolProvider.toSymbol(service).getNamespace().replace("src/", ""))
                 .replace("${apiVersion}", service.getVersion())
                 .replace("$", "$$") // sanitize template place holders.
                 .replace("$${customizations}", "${L@customizations}");

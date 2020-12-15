@@ -404,7 +404,7 @@ final class SymbolVisitor implements SymbolProvider, ShapeVisitor<Symbol> {
      */
     static final class ModuleNameDelegator {
         static final int DEFAULT_CHUNK_SIZE = 300;
-        static final String SHAPE_NAMESPACE_PREFIX = "./models/";
+        static final String SHAPE_NAMESPACE_PREFIX = "./src/models/";
 
         private final Map<Shape, String> visitedModels = new HashMap<>();
         private int bucketCount = 0;
@@ -418,9 +418,9 @@ final class SymbolVisitor implements SymbolProvider, ShapeVisitor<Symbol> {
         public String formatModuleName(Shape shape, String name) {
             // All shapes except for the service and operations are stored in models.
             if (shape.getType() == ShapeType.SERVICE) {
-                return "./" + name;
+                return "./src/" + name;
             } else if (shape.getType() == ShapeType.OPERATION) {
-                return "./commands/" + name;
+                return "./src/commands/" + name;
             } else if (visitedModels.containsKey(shape)) {
                 return visitedModels.get(shape);
             }
@@ -444,7 +444,7 @@ final class SymbolVisitor implements SymbolProvider, ShapeVisitor<Symbol> {
                     .sorted(Comparator.naturalOrder())
                     .forEach(namespace -> writer.write(
                         "export * from $S;", namespace.replaceFirst(SHAPE_NAMESPACE_PREFIX, "./")));
-            fileManifest.writeFile("models/index.ts", writer.toString());
+            fileManifest.writeFile("src/models/index.ts", writer.toString());
         }
     }
 }

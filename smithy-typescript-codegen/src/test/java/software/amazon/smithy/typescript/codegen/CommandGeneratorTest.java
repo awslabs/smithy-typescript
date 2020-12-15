@@ -58,7 +58,7 @@ public class CommandGeneratorTest {
                 .build();
 
         new TypeScriptCodegenPlugin().execute(context);
-        String contents = manifest.getFileString("/commands/GetFooCommand.ts").get();
+        String contents = manifest.getFileString("/src/commands/GetFooCommand.ts").get();
 
         assertThat(contents, containsString("as __MetadataBearer"));
         assertThat(contents, containsString(expectedType));

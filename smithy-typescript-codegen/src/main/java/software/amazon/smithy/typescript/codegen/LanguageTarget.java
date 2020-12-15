@@ -65,6 +65,6 @@ public enum LanguageTarget {
     abstract String getTemplateFileName();
 
     String getTargetFilename() {
-        return getTemplateFileName().replace(".template", "");
+        return "./src/" + getTemplateFileName().replace(".template", "");
     }
 }

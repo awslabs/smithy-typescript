@@ -79,6 +79,6 @@ final class IndexGenerator {
 
         // write export statement for models
         writer.write("export * from \"./models/index\";");
-        fileManifest.writeFile("index.ts", writer.toString());
+        fileManifest.writeFile("src/index.ts", writer.toString());
     }
 }
