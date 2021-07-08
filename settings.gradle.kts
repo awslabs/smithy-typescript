@@ -16,6 +16,7 @@
 rootProject.name = "smithy-typescript"
 include(":smithy-typescript-codegen")
 include(":smithy-typescript-codegen-test")
+include(":smithy-model-converter")
 
 pluginManagement {
     repositories {

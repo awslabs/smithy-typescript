@@ -14,7 +14,7 @@
  */
 
 extra["displayName"] = "Smithy :: Typescript :: Codegen :: Test"
-extra["moduleName"] = "software.amazon.smithy.typescript.codegen.test"
+extra["moduleName"] = "software.amazon.smithy.typescript.codegen.model.converter"
 
 tasks["jar"].enabled = false
 
@@ -31,12 +31,12 @@ dependencies {
     implementation(project(":smithy-typescript-codegen"))
     implementation("software.amazon.smithy:smithy-aws-traits:[1.5.0, 2.0[")
     implementation("software.amazon.smithy:smithy-waiters:[1.5.0, 2.0[")
-//    implementation("smithy-aws-iam-traits:[1.5.0, 2.0[")
     implementation("software.amazon.smithy:smithy-protocol-test-traits:[1.5.0, 2.0[")
 }
 
-
 task("generateSmithyModelFromJson", JavaExec::class) {
+    group = "convert"
+    description = "Convert .json models from ./modelJson into .smithy models placed into ./modelSmithy"
     main = "SmithyModelGenerator"
     classpath = sourceSets["main"].runtimeClasspath
 }

@@ -11,6 +11,10 @@
 # Mac
 .DS_Store
 
+#converter input/output
+**/modelJson
+**/modelSmithy
+
 # Maven
 target/
 **/dependency-reduced-pom.xml
