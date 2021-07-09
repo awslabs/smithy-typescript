@@ -22,7 +22,7 @@ are as follows:
    }
 
    dependencies {
-       implementation("software.amazon.smithy:smithy-typescript-codegen:0.1.0")
+       implementation("software.amazon.smithy:smithy-typescript-codegen:0.3.0")
    }
    ```
 
