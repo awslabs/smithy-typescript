@@ -26,6 +26,7 @@ import java.util.Objects;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.UUID;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import software.amazon.smithy.build.FileManifest;
@@ -35,10 +36,14 @@ import software.amazon.smithy.codegen.core.Symbol;
 import software.amazon.smithy.codegen.core.SymbolDependency;
 import software.amazon.smithy.codegen.core.SymbolProvider;
 import software.amazon.smithy.codegen.core.TopologicalIndex;
+import software.amazon.smithy.codegen.core.trace.ArtifactDefinitions;
+import software.amazon.smithy.codegen.core.trace.TraceMetadata;
+import software.amazon.smithy.codegen.core.trace.TracingSymbolProvider;
 import software.amazon.smithy.model.Model;
 import software.amazon.smithy.model.knowledge.OperationIndex;
 import software.amazon.smithy.model.knowledge.TopDownIndex;
 import software.amazon.smithy.model.neighbor.Walker;
+import software.amazon.smithy.model.node.Node;
 import software.amazon.smithy.model.shapes.OperationShape;
 import software.amazon.smithy.model.shapes.ServiceShape;
 import software.amazon.smithy.model.shapes.Shape;
@@ -99,6 +104,7 @@ class CodegenVisitor extends ShapeVisitor.Default<Void> {
                         runtimePlugins.add(runtimePlugin);
                     });
                 });
+
         // Sort the integrations in specified order.
         integrations.sort(Comparator.comparingInt(TypeScriptIntegration::getOrder));
 
@@ -125,13 +131,44 @@ class CodegenVisitor extends ShapeVisitor.Default<Void> {
         for (TypeScriptIntegration integration : integrations) {
             resolvedProvider = integration.decorateSymbolProvider(settings, model, resolvedProvider);
         }
-        symbolProvider = SymbolProvider.cache(resolvedProvider);
 
         // Resolve the nullable protocol generator and application protocol.
         protocolGenerator = resolveProtocolGenerator(integrations, service, settings);
         applicationProtocol = protocolGenerator == null
                 ? ApplicationProtocol.createDefaultHttpApplicationProtocol()
                 : protocolGenerator.getApplicationProtocol();
+        // Make the symbol provider a cachingSymbolProvider.
+        SymbolProvider cachedProvider = SymbolProvider.cache(resolvedProvider);
+        // Defining Definitions for TraceFile Generation.
+        ArtifactDefinitions artifactDefinitions = ArtifactDefinitions.builder()
+                .addType(TypeScriptShapeLinkProvider.FIELD_TYPE,
+                        "Field declaration (includes enum constants)")
+                .addType(TypeScriptShapeLinkProvider.METHOD_TYPE, "Method declaration")
+                .addType(TypeScriptShapeLinkProvider.TYPE_TYPE,
+                        "Class, interface (including annotation type), or enum declaration")
+                .addTag(TypeScriptShapeLinkProvider.SERVICE_TAG, "Service client")
+                .addTag(TypeScriptShapeLinkProvider.REQUEST_TAG, "AWS SDK request type")
+                .addTag(TypeScriptShapeLinkProvider.RESPONSE_TAG, "AWS SDK response type")
+                .addTag(TypeScriptShapeLinkProvider.SERIALIZER_TAG, "Command serializer")
+                .addTag(TypeScriptShapeLinkProvider.DESERIALIZER_TAG, "Command deserializer")
+                .build();
+
+        String serviceId = service.getId().getName();
+        TraceMetadata artifactMetadata = TraceMetadata.builder()
+                .setTimestampAsNow()
+                .id(serviceId)
+                .version(UUID.randomUUID().toString())
+                .type("TypeScript")
+                .build();
+
+
+        // Decorate the symbol provider using the trace file generator.
+        symbolProvider = TracingSymbolProvider.builder()
+                .symbolProvider(cachedProvider)
+                .metadata(artifactMetadata)
+                .artifactDefinitions(artifactDefinitions)
+                .shapeLinkCreator(new TypeScriptShapeLinkProvider())
+                .build();
 
         writers = new TypeScriptDelegator(settings, model, fileManifest, symbolProvider, integrations);
     }
@@ -229,6 +266,13 @@ class CodegenVisitor extends ShapeVisitor.Default<Void> {
             context.setDeferredWriter(() -> writers.checkoutFileWriter(protocolTestFileName));
             protocolGenerator.generateProtocolTests(context);
         }
+
+        // Write the TraceFile.
+        TracingSymbolProvider traceProvider = (TracingSymbolProvider) symbolProvider;
+        String traceName = symbolProvider.toSymbol(service).getName().replace("Client", "")
+                .toLowerCase() + ".trace.json";
+        fileManifest.writeFile(traceName,
+                Node.prettyPrintJson(traceProvider.buildTraceFile().toNode()));
 
         // Write each pending writer.
         LOGGER.fine("Flushing TypeScript writers");
@@ -472,7 +516,7 @@ class CodegenVisitor extends ShapeVisitor.Default<Void> {
         TopDownIndex topDownIndex = TopDownIndex.of(model);
         Set<OperationShape> containedOperations = new TreeSet<>(topDownIndex.getContainedOperations(shape));
         for (OperationShape operation : containedOperations) {
-            // Right now this only generates stubs
+            // Right now this only generates stubs.
             if (settings.generateClient()) {
                 writers.useShapeWriter(operation, commandWriter -> new CommandGenerator(
                         settings, model, operation, symbolProvider, commandWriter,
