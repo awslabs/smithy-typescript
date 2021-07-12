@@ -85,14 +85,14 @@ public final class AddEventStreamDependency implements TypeScriptIntegration {
                     writer.addDependency(TypeScriptDependency.AWS_SDK_EVENTSTREAM_SERDE_NODE);
                     writer.addImport("eventStreamSerdeProvider", "eventStreamSerdeProvider",
                             TypeScriptDependency.AWS_SDK_EVENTSTREAM_SERDE_NODE.packageName);
-                    writer.write("eventStreamSerdeProvider,");
+                    writer.write("eventStreamSerdeProvider");
                 });
             case BROWSER:
                 return MapUtils.of("eventStreamSerdeProvider", writer -> {
                     writer.addDependency(TypeScriptDependency.AWS_SDK_EVENTSTREAM_SERDE_BROWSER);
                     writer.addImport("eventStreamSerdeProvider", "eventStreamSerdeProvider",
                             TypeScriptDependency.AWS_SDK_EVENTSTREAM_SERDE_BROWSER.packageName);
-                    writer.write("eventStreamSerdeProvider,");
+                    writer.write("eventStreamSerdeProvider");
                 });
             default:
                 return Collections.emptyMap();

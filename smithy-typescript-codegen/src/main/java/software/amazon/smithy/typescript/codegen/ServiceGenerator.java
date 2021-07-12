@@ -92,7 +92,7 @@ final class ServiceGenerator implements Runnable {
     @Override
     public void run() {
         writer.addImport("Client", "__Client", "@aws-sdk/smithy-client");
-        writer.addImport("ClientDefaultValues", "__ClientDefaultValues", "./runtimeConfig");
+        writer.addImport("getRuntimeConfig", "__getRuntimeConfig", "./runtimeConfig");
 
         // Normalize the input and output types of the command to account for
         // things like an operation adding input where there once wasn't any
@@ -301,10 +301,8 @@ final class ServiceGenerator implements Runnable {
             writer.pushState(CLIENT_CONSTRUCTOR_SECTION);
 
             int configVariable = 0;
-            writer.write("let $L = {\n"
-                         + "  ...__ClientDefaultValues,\n"
-                         + "  ...configuration\n"
-                         + "};", generateConfigVariable(configVariable));
+            writer.write("let $L = __getRuntimeConfig(configuration);",
+                    generateConfigVariable(configVariable));
 
             // Add runtime plugin "resolve" method calls. These are invoked one
             // after the other until all of the runtime plugins have been called.

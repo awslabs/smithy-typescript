@@ -297,18 +297,18 @@ public interface TypeScriptIntegration {
      *         // runtimeConfig file.
      *         Map<String, Consumer<TypeScriptWriter>> config = new HashMap<>();
      *         config.put("foo", writer -> {
-     *            writer.write("foo: some static value,"); // Note the trailing comma!
+     *            writer.write("some static value");
      *         });
      *
      *         switch (target) {
      *             case NODE:
      *                 config.put("bar", writer -> {
-     *                     writer.write("bar: someNodeValue,");
+     *                     writer.write("(() => someNodeValue)"); // Note the parenthesis surrounding arrow functions
      *                 });
      *                 break;
      *             case BROWSER:
      *                 config.put("bar", writer -> {
-     *                     writer.write("bar: someBrowserValue,");
+     *                     writer.write("someBrowserValue");
      *                 });
      *                 break;
      *             case SHARED:
@@ -342,7 +342,7 @@ public interface TypeScriptIntegration {
      *                 String someTraitValue = settings.getModel(model).getTrait(SomeTrait.class)
      *                             .map(SomeTrait::getValue)
      *                             .orElse("");
-     *                 writer.write("someTraitValue: $S,", someTraitValue);
+     *                 writer.write(someTraitValue);
      *             });
      *         }
      *     }
@@ -361,6 +361,6 @@ public interface TypeScriptIntegration {
             SymbolProvider symbolProvider,
             LanguageTarget target
     ) {
-        return Collections.emptyMap();
+         return Collections.emptyMap();
     }
 }
