@@ -237,8 +237,17 @@ final class SymbolVisitor implements SymbolProvider, ShapeVisitor<Symbol> {
 
     @Override
     public Symbol documentShape(DocumentShape shape) {
-        Symbol.Builder builder = createSymbolBuilder(shape, "__DocumentType.Value");
-        return addSmithyUseImport(builder, "DocumentType", "__DocumentType").build();
+        Symbol.Builder builder = createSymbolBuilder(shape, "__DocumentType");
+        Symbol importSymbol = Symbol.builder()
+                .name("DocumentType")
+                .namespace(TypeScriptDependency.AWS_SDK_TYPES.packageName, "/")
+                .build();
+        SymbolReference reference = SymbolReference.builder()
+                .symbol(importSymbol)
+                .alias("__DocumentType")
+                .options(SymbolReference.ContextOption.USE)
+                .build();
+        return builder.addReference(reference).build();
     }
 
     @Override

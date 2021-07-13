@@ -20,7 +20,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@aws-sdk/protocol-http": "^3.5.0",
-    "@aws-sdk/types": "^3.4.1",
+    "@aws-sdk/types": "3.20.0",
     "@types/aws-lambda": "^8.10.72",
     "tslib": "^1.8.0"
   },

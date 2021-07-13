@@ -334,7 +334,7 @@ public final class HttpProtocolGeneratorUtils {
 
             // Error responses must be at least SmithyException and MetadataBearer implementations.
             writer.addImport("SmithyException", "__SmithyException",
-                    TypeScriptDependency.AWS_SMITHY_CLIENT.packageName);
+                    TypeScriptDependency.AWS_SDK_TYPES.packageName);
             writer.addImport("MetadataBearer", "__MetadataBearer",
                     TypeScriptDependency.AWS_SDK_TYPES.packageName);
             // These responses will also have additional properties, so enable that on the interface.

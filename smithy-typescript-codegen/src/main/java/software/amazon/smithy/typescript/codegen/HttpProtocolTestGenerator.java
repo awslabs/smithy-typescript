@@ -610,7 +610,7 @@ public final class HttpProtocolTestGenerator implements Runnable {
         writer.write("const request = new HttpRequest({method: 'POST', hostname: 'example.com'});");
 
         // Create a new serializer factory that always returns our test serializer.
-        writer.addImport("SmithyException", "__SmithyException", "@aws-sdk/smithy-client");
+        writer.addImport("SmithyException", "__SmithyException", "@aws-sdk/types");
         writer.addImport("OperationSerializer", "__OperationSerializer", "@aws-smithy/server-common");
         writer.openBlock("const serFn: (op: $1T) => __OperationSerializer<$2T<{}>, $1T, __SmithyException> = (op) =>"
                         + " { return new TestSerializer(); };", serviceOperationsSymbol, serviceSymbol);
