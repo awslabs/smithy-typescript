@@ -1,11 +1,14 @@
-import { ClientDefaults } from "${clientModuleName}";
-import { ClientSharedValues } from "./runtimeConfig.shared";
+import { ${clientConfigName} } from "${clientModuleName}";
+import { getRuntimeConfig as getSharedRuntimeConfig } from "./runtimeConfig.shared";
 
 /**
  * @internal
  */
-export const ClientDefaultValues: Required<ClientDefaults> = {
-  ...ClientSharedValues,
-  runtime: "node",
+export const getRuntimeConfig = (config: ${clientConfigName}) => {
+  const clientSharedValues = getSharedRuntimeConfig(config);
+  return {
+    ...clientSharedValues,
+    runtime: "node",
 ${customizations}
+  };
 };

@@ -93,23 +93,24 @@ public class RuntimeConfigGeneratorTest {
         // Does the runtimeConfig.ts file expand the template properties properly?
         String runtimeConfigContents = manifest.getFileString("runtimeConfig.ts").get();
         assertThat(runtimeConfigContents,
-                   containsString("import { ClientDefaults } from \"./ExampleClient\";"));
+                   containsString("import { ExampleClientConfig } from \"./ExampleClient\";"));
         assertThat(runtimeConfigContents, containsString("syn: 'ack2',"));
         assertThat(runtimeConfigSharedContents, containsString("foo: 'bar',"));
 
         // Does the runtimeConfig.browser.ts file expand the template properties properly?
         String runtimeConfigBrowserContents = manifest.getFileString("runtimeConfig.browser.ts").get();
         assertThat(runtimeConfigBrowserContents,
-                   containsString("import { ClientDefaults } from \"./ExampleClient\";"));
+                   containsString("import { ExampleClientConfig } from \"./ExampleClient\";"));
         assertThat(runtimeConfigContents, containsString("syn: 'ack2',"));
         assertThat(runtimeConfigSharedContents, containsString("foo: 'bar',"));
 
         // Does the runtimeConfig.native.ts file expand the browser template properties properly?
         String runtimeConfigNativeContents = manifest.getFileString("runtimeConfig.native.ts").get();
         assertThat(runtimeConfigNativeContents,
-                containsString("import { ClientDefaults } from \"./ExampleClient\";"));
+                containsString("import { ExampleClientConfig } from \"./ExampleClient\";"));
         assertThat(runtimeConfigNativeContents,
-                containsString("import { ClientDefaultValues as BrowserDefaults } from \"./runtimeConfig.browser\";"));
+                containsString(
+                        "import { getRuntimeConfig as getBrowserRuntimeConfig } from \"./runtimeConfig.browser\";"));
         assertThat(runtimeConfigContents, containsString("syn: 'ack2',"));
         assertThat(runtimeConfigSharedContents, containsString("foo: 'bar',"));
     }

@@ -85,13 +85,13 @@ public final class AddChecksumRequiredDependency implements TypeScriptIntegratio
                         writer.addDependency(TypeScriptDependency.STREAM_HASHER_NODE);
                         writer.addImport("fileStreamHasher", "streamHasher",
                                 TypeScriptDependency.STREAM_HASHER_NODE.packageName);
-                        writer.write("streamHasher,");
+                        writer.write("streamHasher");
                     },
                     "md5", writer -> {
                             writer.addDependency(TypeScriptDependency.AWS_SDK_TYPES);
                             writer.addImport("HashConstructor", "__HashConstructor",
                                     TypeScriptDependency.AWS_SDK_TYPES.packageName);
-                            writer.write("md5: Hash.bind(null, \"md5\"),");
+                            writer.write("Hash.bind(null, \"md5\")");
                     });
             case BROWSER:
                 return MapUtils.of(
@@ -99,12 +99,12 @@ public final class AddChecksumRequiredDependency implements TypeScriptIntegratio
                         writer.addDependency(TypeScriptDependency.STREAM_HASHER_BROWSER);
                         writer.addImport("blobHasher", "streamHasher",
                                 TypeScriptDependency.STREAM_HASHER_BROWSER.packageName);
-                        writer.write("streamHasher,");
+                        writer.write("streamHasher");
                     },
                     "md5", writer -> {
                         writer.addDependency(TypeScriptDependency.MD5_BROWSER);
                         writer.addImport("Md5", "Md5", TypeScriptDependency.MD5_BROWSER.packageName);
-                        writer.write("md5: Md5,");
+                        writer.write("Md5");
                     });
             default:
                 return Collections.emptyMap();
