@@ -60,8 +60,9 @@ public final class AddChecksumRequiredDependency implements TypeScriptIntegratio
                 + "@internal");
         writer.write("streamHasher?: __StreamHasher<Readable> | __StreamHasher<Blob>;\n");
 
+        writer.addImport("Hash", "__Hash", "@aws-sdk/types");
         writer.addImport("HashConstructor", "__HashConstructor", "@aws-sdk/types");
-        writer.writeDocs("A constructor for a class implementing the @aws-sdk/types.Hash interface \n"
+        writer.writeDocs("A constructor for a class implementing the {@link __Hash} interface \n"
                 + "that computes MD5 hashes.\n"
                 + "@internal");
         writer.write("md5?: __HashConstructor;\n");

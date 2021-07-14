@@ -212,8 +212,9 @@ final class ServiceGenerator implements Runnable {
             writer.writeDocs("The HTTP handler to use. Fetch in browser and Https in Nodejs.");
             writer.write("requestHandler?: __HttpHandler;\n");
 
+            writer.addImport("Hash", "__Hash", "@aws-sdk/types");
             writer.addImport("HashConstructor", "__HashConstructor", "@aws-sdk/types");
-            writer.writeDocs("A constructor for a class implementing the @aws-sdk/types.Hash interface \n"
+            writer.writeDocs("A constructor for a class implementing the {@link __Hash} interface \n"
                              + "that computes the SHA-256 HMAC or checksum of a string or binary buffer.\n"
                              + "@internal");
             writer.write("sha256?: __HashConstructor;\n");
